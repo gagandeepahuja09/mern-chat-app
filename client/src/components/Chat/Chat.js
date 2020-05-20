@@ -32,10 +32,34 @@ const Chat = ({ location }) => {
     // for handling messages
     useEffect(() => {
         // getting that message from backend using on at frontend and emit at backend
-        socket.on('message', );
-    });
+        socket.on('message', ( message ) => {
+            // since we cannot mutate the state
+            setMessages({ ...messages, message });
+        });
+    // we want to run this, only when messages array changes
+    }, [messages]);
+
+    const sendMessage = (event) => {
+        // Default behaviour would be to reset everything on 
+        event.preventDefault();
+
+        if(message) {
+            setMessages({ ...messages, message });
+            socket.emit('sendMessage', message, () => setMessage(''));
+        }
+    }
+
+    console.log(message, messages);
+
     return (
-        <h1>Chat</h1>
+        <div className = "outerContainer">
+            <div className = "container">
+                <input value = {message} 
+                onChange = { (event) => setMessage(event.target.value) }
+                onKeyPress = { (event) => event.key === 'Enter' ? sendMessage(event) : null}
+                />
+            </div>
+        </div>
     );
 }
 
