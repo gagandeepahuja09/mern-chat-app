@@ -7,6 +7,8 @@ let socket;
 const Chat = ({ location }) => {
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
+    const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
     const ENDPOINT = 'localhost:5000';
 
     useEffect(() => {
@@ -20,10 +22,18 @@ const Chat = ({ location }) => {
         setRoom(room);
 
         console.log(socket);
+        // Emitting the name and room, so that it can be used in backend(on('join') in index.js)
         socket.emit('join', { name, room });
 
     // only if these two values change, then only rerender it
     }, [ENDPOINT, location.search]);
+
+
+    // for handling messages
+    useEffect(() => {
+        // getting that message from backend using on at frontend and emit at backend
+        socket.on('message', );
+    });
     return (
         <h1>Chat</h1>
     );
