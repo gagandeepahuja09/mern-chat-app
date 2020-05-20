@@ -5,6 +5,7 @@ import io from "socket.io-client";
 
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
+import Messages from '../Messages/Messages';
 
 import './Chat.css'
 
@@ -40,17 +41,17 @@ const Chat = ({ location }) => {
         // getting that message from backend using on at frontend and emit at backend
         socket.on('message', ( message ) => {
             // since we cannot mutate the state
-            setMessages({ ...messages, message });
+            setMessages(messages => [ ...messages, message ]);
         });
     // we want to run this, only when messages array changes
-    }, [messages]);
+    }, []);
 
     const sendMessage = (event) => {
         // Default behaviour would be to reset everything on 
         event.preventDefault();
 
         if(message) {
-            setMessages({ ...messages, message });
+            setMessages(messages => [ ...messages, message ]);
             socket.emit('sendMessage', message, () => setMessage(''));
         }
     }
@@ -61,7 +62,7 @@ const Chat = ({ location }) => {
         <div className = "outerContainer">
             <div className = "container">
                 <InfoBar room = { room } />
-
+                <Messages messages = { messages } name = { name } />
                 <Input message = { message } setMessage = { setMessage } sendMessage = { sendMessage } />
             </div>
         </div>
