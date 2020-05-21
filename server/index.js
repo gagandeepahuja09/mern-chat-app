@@ -30,6 +30,13 @@ io.on('connect', (socket) => {
     // callback();
   });
 
+  socket.on('typing', (name) => {
+    const user = getUser(socket.id);
+
+    if(name)
+      socket.broadcast.to(user.room).emit('top-status', `${name} is typing`);
+  });
+
   socket.on('sendMessage', (message, callback) => {
     const user = getUser(socket.id);
     if(user) {

@@ -14,6 +14,8 @@ let socket;
 const Chat = ({ location }) => {
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
+    const [status, setStatus] = useState('');
+    const [typing, setTyping] = useState('');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const ENDPOINT = 'localhost:5000';
@@ -35,6 +37,15 @@ const Chat = ({ location }) => {
     // only if these two values change, then only rerender it
     }, [ENDPOINT, location.search]);
 
+    useEffect(() => {
+        socket.emit('typing', name);
+    }, [typing]);
+
+    useEffect(() => {
+        socket.on('top-status', (status) => {
+            setStatus(status);
+        });
+    }, [typing]);
 
     // for handling messages
     useEffect(() => {
@@ -43,13 +54,11 @@ const Chat = ({ location }) => {
             // since we cannot mutate the state
             setMessages(messages => [ ...messages, message ]);
         });
-    // we want to run this, only when messages array changes
     }, []);
 
     const sendMessage = (event) => {
         // Default behaviour would be to reset everything on 
         event.preventDefault();
-
         if(message) {
             setMessages(messages => [ ...messages, message ]);
             socket.emit('sendMessage', message, () => setMessage(''));
@@ -61,9 +70,9 @@ const Chat = ({ location }) => {
     return (
         <div className = "outerContainer">
             <div className = "container">
-                <InfoBar room = { room } />
+                <InfoBar room = { room } status = { status } />
                 <Messages messages = { messages } name = { name } />
-                <Input message = { message } setMessage = { setMessage } sendMessage = { sendMessage } />
+                <Input message = { message } setMessage = { setMessage } sendMessage = { sendMessage } typing = { typing } setTyping = { setTyping } />
             </div>
         </div>
     );
