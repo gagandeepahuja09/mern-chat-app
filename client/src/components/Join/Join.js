@@ -39,11 +39,11 @@ export default function SignIn() {
         <div>
           <input placeholder="Password" className="joinInput mt-20" type="text" onChange={(event) => setRoom(event.target.value)} />
         </div>
-        <Link to = '/register'> 
-          <button className={'button mt-20'} onClick= {handleLogIn}>Reg</button>
-        </Link>
         <Link>
           <button className={'button mt-20'} onClick= {handleLogIn}>Log In</button>
+        </Link>
+        <Link to = '/register'> 
+          <button className={'button btn-blue mt-20'} onClick= {handleLogIn}>Register</button>
         </Link>
       </div>
     </div>

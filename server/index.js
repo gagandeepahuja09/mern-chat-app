@@ -28,9 +28,16 @@ app.post('/users/enter', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     console.log(hashedPassword);
-    const user = { name: req.body.name, password: hashedPassword };
-    users.push(user);
-    res.status(201).send();
+    const check = users.find(user => user.name === req.body.name);
+    console.log(check);
+    if(check === undefined) {
+      const user = { name: req.body.name, password: hashedPassword };
+      users.push(user);
+      res.status(201).send();
+    }
+    else {
+      res.status(200).send();
+    }
   } catch {
     res.status(500).send();
   }
@@ -47,8 +54,6 @@ app.post('/users/login', async (req, res) => {
       console.log(user.password);
       res.send('Success')
     } else {
-      // console.log(req.body.password);
-      // console.log(user.password);
       res.send('Not Allowed')
     }
   } catch {
