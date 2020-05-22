@@ -11,6 +11,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+let timeout;
+
 app.use(cors());
 app.use(router);
 
@@ -32,9 +34,10 @@ io.on('connect', (socket) => {
 
   socket.on('typing', (name) => {
     const user = getUser(socket.id);
-
     if(name)
       socket.broadcast.to(user.room).emit('top-status', `${name} is typing`);
+    else
+      socket.broadcast.to(user.room).emit('top-status', '');
   });
 
   socket.on('sendMessage', (message, callback) => {

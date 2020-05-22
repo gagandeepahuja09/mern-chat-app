@@ -9,7 +9,7 @@ import Messages from '../Messages/Messages';
 
 import './Chat.css'
 
-let socket;
+let socket, timeout;
 
 const Chat = ({ location }) => {
     const [name, setName] = useState('');
@@ -37,8 +37,14 @@ const Chat = ({ location }) => {
     // only if these two values change, then only rerender it
     }, [ENDPOINT, location.search]);
 
+    const timeoutFunction = () => {
+        socket.emit("typing", false);
+    }
+
     useEffect(() => {
         socket.emit('typing', name);
+        clearTimeout(timeout)
+        timeout = setTimeout(timeoutFunction, 2000)
     }, [typing]);
 
     useEffect(() => {
