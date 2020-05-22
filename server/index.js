@@ -3,6 +3,12 @@ const express = require('express');
 const socketio = require('socket.io');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/users', {useNewUrlParser: true});
+const db = mongoose.connection;
+db.on('error', (error) => console.error(error));
+db.once('open', () => console.log('Connected to database'));
 
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 
@@ -11,6 +17,7 @@ const router = require('./router');
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+
 
 let timeout;
 
