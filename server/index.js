@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
 
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 
@@ -15,6 +16,46 @@ let timeout;
 
 app.use(cors());
 app.use(router);
+app.use(express.json());
+
+const users = [];
+
+app.get('/users', (req, res) => {
+  res.json(users);
+});
+
+app.post('/users/enter', async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    console.log(hashedPassword);
+    const user = { name: req.body.name, password: hashedPassword };
+    users.push(user);
+    res.status(201).send();
+  } catch {
+    res.status(500).send();
+  }
+})
+
+app.post('/users/login', async (req, res) => {
+  const user = users.find(user => user.name === req.body.name)
+  if (user == null) {
+    return res.status(400).send('Cannot find user')
+  }
+  try {
+    if(await bcrypt.compare(req.body.password, user.password)) {
+      console.log(req.body.password);
+      console.log(user.password);
+      res.send('Success')
+    } else {
+      // console.log(req.body.password);
+      // console.log(user.password);
+      res.send('Not Allowed')
+    }
+  } catch {
+    res.status(500).send()
+  }
+})
+
 
 io.on('connect', (socket) => {
   socket.on('join', ({ name, room }, callback) => {
@@ -34,7 +75,7 @@ io.on('connect', (socket) => {
 
   socket.on('typing', (name) => {
     const user = getUser(socket.id);
-    if(name)
+    if(user && name)
       socket.broadcast.to(user.room).emit('top-status', `${name} is typing`);
     else
       socket.broadcast.to(user.room).emit('top-status', '');
@@ -42,6 +83,7 @@ io.on('connect', (socket) => {
 
   socket.on('sendMessage', (message, callback) => {
     const user = getUser(socket.id);
+    console.log("sending message");
     if(user) {
       io.to(user.room).emit('message', { user: user.name, text: message });
     }

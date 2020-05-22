@@ -59,6 +59,7 @@ const Chat = ({ location }) => {
         socket.on('message', ( message ) => {
             // since we cannot mutate the state
             setMessages(messages => [ ...messages, message ]);
+            console.log('message sent');
         });
     }, []);
 

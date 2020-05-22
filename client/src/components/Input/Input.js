@@ -5,9 +5,6 @@ import './Input.css';
 const Input = ({ setMessage, sendMessage, message, typing, setTyping }) => {
     return (
         <div>
-        <div>
-            { typing ? "I am typing" : "" }
-        </div>
         <form className="form">
             <input
             className="input"
