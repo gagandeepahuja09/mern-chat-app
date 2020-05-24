@@ -14,11 +14,10 @@ router.get('/', async(req, res) => {
     }
 });
 
-router.get('/name', async(req, res) => {
+router.post('/name', async(req, res) => {
     try {
-        console.log("nm", req.body.name);
-        const user = await User.find({ name: req.body.nm });
-        res.status(200).json(user);
+        const user = await User.find({ name: req.body.name });
+        res.json(user);
     }
     catch(err) {
         res.status(500).json({ message: err.message });

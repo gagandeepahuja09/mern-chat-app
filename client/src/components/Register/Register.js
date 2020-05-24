@@ -11,20 +11,15 @@ const Register = () => {
 
     const handleRegister = () => {
         let flag = true;
-        axios.get(URL + 'users/name', { nm: name })
+        axios.post(URL + 'users/name', { name: name })
         .then((res) => {
             console.log("se", res);
             if(res.data.length) {
-                console.log(res.data.message);
-                if(res.data.message === "Name already exists") {
-                    setDisplay(res.data.message);
-                }
+                setDisplay('Please try another name, this already exists');
             }
             else {
                 axios.post(URL + 'users', { name: name, password: room })
                 .then((res) => {
-                    // console.log(res);
-                    
                     setDisplay('Account Created');
                     // window.location = '/';
                 });
