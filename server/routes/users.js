@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Subscriber = require('../models/users');
+const User = require('../models/users');
 
 router.get('/', async(req, res) => {
     try {
         res.send('Hello World');
-        const subscribers = await Subscriber.find();
-        res.json(subscribers);
+        const user = await User.find();
+        res.json(user);
     }
     catch(err) {
         res.status(500).json({ message: err.message });
