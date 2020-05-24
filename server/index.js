@@ -12,7 +12,7 @@ db.once('open', () => console.log('Connected to database'));
 
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 
-// const router = require('./router');
+const router = require('./router');
 
 const app = express();
 // const server = http.createServer(app);
@@ -22,7 +22,7 @@ const app = express();
 let timeout;
 
 app.use(cors());
-// app.use(router);
+app.use(router);
 app.use(express.json());
 
 const users = [];
@@ -52,24 +52,6 @@ app.post('/users/enter', async (req, res) => {
     }
   } catch {
     res.status(500).send();
-  }
-})
-
-app.post('/users/login', async (req, res) => {
-  const user = users.find(user => user.name === req.body.name)
-  if (user == null) {
-    return res.status(400).send('Cannot find user')
-  }
-  try {
-    if(await bcrypt.compare(req.body.password, user.password)) {
-      console.log(req.body.password);
-      console.log(user.password);
-      res.send('Success')
-    } else {
-      res.send('Not Allowed')
-    }
-  } catch {
-    res.status(500).send()
   }
 })
 
