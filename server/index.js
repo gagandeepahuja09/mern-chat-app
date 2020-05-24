@@ -1,7 +1,7 @@
 // const http = require('http');
 const express = require('express');
 // const socketio = require('socket.io');
-// const cors = require('cors');
+const cors = require('cors');
 // const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 
@@ -21,7 +21,7 @@ const app = express();
 
 let timeout;
 
-// app.use(cors());
+app.use(cors());
 // app.use(router);
 app.use(express.json());
 

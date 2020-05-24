@@ -39,6 +39,7 @@ html, body {
 }
 
 .button {
+    cursor: pointer;
     color: whitesmoke !important;
     font-weight: 1000;
     font-size: 1.1rem;
