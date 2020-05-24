@@ -18,11 +18,12 @@ export default function SignIn() {
       .then((res) => {
         console.log(res);
         console.log("fr");
-        setincorrectText(res.data);
+        if(res.data === '') {
+          var url = window.location.origin;
+          url = url +  `/users/?name=${name}`;
+          window.location.href = url;
+        }
       });
-      if(incorrectText === '') {
-        // window.location += `?name=${name}`; 
-      }
   } 
 
   return (

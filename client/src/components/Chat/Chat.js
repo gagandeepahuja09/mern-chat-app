@@ -22,7 +22,7 @@ const Chat = ({ location }) => {
 
     useEffect(() => {
         // Getting data from query parameters and setting them in variables
-        const { name, room } = queryString.parse(location.search);
+        const { name, room } = queryString.parse(window.location.search);
 
         // Setup the socket 
         socket = io(ENDPOINT);
@@ -35,7 +35,7 @@ const Chat = ({ location }) => {
         socket.emit('join', { name, room });
 
     // only if these two values change, then only rerender it
-    }, [ENDPOINT, location.search]);
+    }, [ENDPOINT, window.location.search]);
 
     const timeoutFunction = () => {
         socket.emit("typing", false);

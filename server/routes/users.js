@@ -6,7 +6,8 @@ const bcrypt = require('bcrypt');
 router.get('/', async(req, res) => {
     try {
         const user = await User.find();
-        res.json(user);
+        res.send(user);
+        res.send('');
     }
     catch(err) {
         res.status(500).json({ message: err.message });
