@@ -8,22 +8,25 @@ const Register = () => {
     const [name, setName] = useState('');
     const [display, setDisplay] = useState('');
     const [room, setRoom] = useState('');
-    const [nameTaken, setNameTaken] = useState('');
 
     const handleRegister = () => {
         let flag = true;
-        axios.get(URL + 'users/name', { name: name })
+        axios.get(URL + 'users/name', { nm: name })
         .then((res) => {
-            console.log(res.data.message);
-            if(res.data.message === "Name already exists") {
-                setDisplay(res.message);
+            console.log("se", res);
+            if(res.data.length) {
+                console.log(res.data.message);
+                if(res.data.message === "Name already exists") {
+                    setDisplay(res.data.message);
+                }
             }
             else {
                 axios.post(URL + 'users', { name: name, password: room })
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
+                    
                     setDisplay('Account Created');
-                    window.location = '/';
+                    // window.location = '/';
                 });
             }
         });

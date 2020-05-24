@@ -16,14 +16,9 @@ router.get('/', async(req, res) => {
 
 router.get('/name', async(req, res) => {
     try {
-        const user = await User.findOne({ name: req.body.name });
-        if(user) {
-            res.status(200).json({ message: "Name already exists" });
-        }
-        else {
-            res.status(200).json({ message: "New name" });
-        }
-        console.log(user);
+        console.log("nm", req.body.name);
+        const user = await User.find({ name: req.body.nm });
+        res.status(200).json(user);
     }
     catch(err) {
         res.status(500).json({ message: err.message });
@@ -31,7 +26,6 @@ router.get('/name', async(req, res) => {
 });
 
 router.post('/', async(req, res) => {
-    const exist = await User.findById({ name: req.body.name });
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = new User({
         name: req.body.name,
