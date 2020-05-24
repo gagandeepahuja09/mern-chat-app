@@ -1,8 +1,8 @@
-const http = require('http');
+// const http = require('http');
 const express = require('express');
-const socketio = require('socket.io');
-const cors = require('cors');
-const bcrypt = require('bcrypt');
+// const socketio = require('socket.io');
+// const cors = require('cors');
+// const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/users', {useNewUrlParser: true});
@@ -12,17 +12,17 @@ db.once('open', () => console.log('Connected to database'));
 
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 
-const router = require('./router');
+// const router = require('./router');
 
 const app = express();
-const server = http.createServer(app);
-const io = socketio(server);
+// const server = http.createServer(app);
+// const io = socketio(server);
 
 
 let timeout;
 
-app.use(cors());
-app.use(router);
+// app.use(cors());
+// app.use(router);
 app.use(express.json());
 
 const users = [];
@@ -30,9 +30,11 @@ const users = [];
 const usersRouter = require('./routes/users.js');
 app.use('/users', usersRouter);
 
-app.get('/users', (req, res) => {
-  res.json(users);
-});
+// app.get('/users', (req, res) => {
+//   res.json(users);
+// });
+
+/*
 
 app.post('/users/enter', async (req, res) => {
   try {
@@ -115,4 +117,6 @@ io.on('connect', (socket) => {
   })
 });
 
-server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));
+*/
+
+app.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));
