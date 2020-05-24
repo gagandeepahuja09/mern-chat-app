@@ -27,6 +27,9 @@ app.use(express.json());
 
 const users = [];
 
+const usersRouter = require('./routes/users.js');
+app.use('/users', usersRouter);
+
 app.get('/users', (req, res) => {
   res.json(users);
 });
