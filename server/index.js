@@ -12,8 +12,6 @@ db.once('open', () => console.log('Connected to database'));
 
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 
-const router = require('./router');
-
 const User = require('./models/users');
 const Message = require('./models/message');
 
@@ -21,52 +19,23 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+// console.log(io);
 
 let timeout;
 
-app.use(cors({ withCredentials: false }));
-app.use(router);
+app.use(cors({ credentials: false  }));
 app.use(express.json());
-
-const users = [];
 
 const usersRouter = require('./routes/users.js');
 app.use('/users', usersRouter);
 
-
-// app.get('/users', (req, res) => {
-//   res.json(users);
-// });
-
-
-
-// app.post('/users/enter', async (req, res) => {
-//   try {
-//     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-//     console.log(hashedPassword);
-//     const check = users.find(user => user.name === req.body.name);
-//     console.log(check);
-//     if(check === undefined) {
-//       const user = { name: req.body.name, password: hashedPassword };
-//       users.push(user);
-//       res.status(201).send();
-//     }
-//     else {
-//       res.status(200).send();
-//     }
-//   } catch {
-//     res.status(500).send();
-//   }
-// })
-
-
 io.on('connect', (socket) => {
-  console.log("YO");
+  console.log("reached");
   socket.on('join', ({ f, t }, callback) => {
     // const { error, user } = addUser({ id: socket.id, name, room });
     console.log("heeee");
 
-    // if(error) return callback(error);
+    if(error) return callback(error);
 
     // Get all messages stored in mongodb b/w from and to
     Message.find({ from: f, to: t }).then(messages => {
