@@ -5,6 +5,8 @@ const cors = require('cors');
 // const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 
+const router = require('./router');
+
 mongoose.connect('mongodb://localhost/users', {useNewUrlParser: true});
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
@@ -16,26 +18,27 @@ const User = require('./models/users');
 const Message = require('./models/message');
 
 const app = express();
-const server = http.createServer(app);
-const io = socketio(server);
+const server = app.listen(5000);
+const io = socketio.listen(server);
 
 // console.log(io);
 
 let timeout;
 
-app.use(cors({ credentials: false  }));
+app.use(cors());
 app.use(express.json());
+app.use(router);
 
 const usersRouter = require('./routes/users.js');
 app.use('/users', usersRouter);
 
-io.on('connect', (socket) => {
+io.on('connection', (socket) => {
   console.log("reached");
   socket.on('join', ({ f, t }, callback) => {
     // const { error, user } = addUser({ id: socket.id, name, room });
     console.log("heeee");
 
-    if(error) return callback(error);
+    // if(error) return callback(error);
 
     // Get all messages stored in mongodb b/w from and to
     Message.find({ from: f, to: t }).then(messages => {
@@ -47,7 +50,7 @@ io.on('connect', (socket) => {
     // socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
     // socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
 
-    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+    // io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
 
     // callback();
   });
@@ -63,11 +66,11 @@ io.on('connect', (socket) => {
   socket.on('sendMessage', (response, callback) => {
     // User.find({ name: from });
     console.log("sending message");
-    if(user) {
-      io.emit('message', { user: response.from, text: response.text });
-    }
+    // if(user) {
+    //   io.emit('message', { user: response.from, text: response.text });
+    // }
     // Add an entry in message model
-    const msg = new Message(message);
+    const msg = new Message(response);
     msg.save((err, m) => {
       if(err) return console.log(err);
       console.log(m.text + m.from + m.to + "saved");
@@ -84,4 +87,4 @@ io.on('connect', (socket) => {
   // })
 });
 
-app.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));
+app.listen(app.get('port'), () => console.log(`Server has started.`));
