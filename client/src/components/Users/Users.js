@@ -5,6 +5,7 @@ import axios from 'axios';
 
 const Users = () => {
     const URL = "http://localhost:5000/";
+    const fURL = "http://localhost:3000/";
     const [name, setName] = useState('');
     const [users, setUsers] = useState([]);
 
@@ -17,9 +18,12 @@ const Users = () => {
         });
     }, [window.location.search, URL]);
 
-    function displayUsers() {
-        const ans = users.map(user => 
-            <li>{ user.name }</li>);
+    const displayChat = (other) => { 
+        window.location.assign(`${fURL}chat/?from=${name}&to=${other}`);
+    }
+
+    const displayUsers = () => {
+        const ans = users.map(user => <li onClick = { () => displayChat(user.name) }>{ user.name }</li>);
         return ans;
     }
 
