@@ -12,12 +12,7 @@ const messageSchema = mongoose.Schema({
     text: {
         type: String,
         required: true,
-    },
-    timestamp: {
-        type: Date,
-        required: true,
-        default: Date.now
     }
 });
 
-module.exports = mongoose.model('Messsage', messageSchema);
+module.exports = mongoose.model('Message', messageSchema);

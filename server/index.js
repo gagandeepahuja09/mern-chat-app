@@ -65,12 +65,16 @@ io.on('connection', (socket) => {
 
   socket.on('sendMessage', (response, callback) => {
     // User.find({ name: from });
-    console.log("sending message");
     // if(user) {
     //   io.emit('message', { user: response.from, text: response.text });
     // }
     // Add an entry in message model
-    const msg = new Message(response);
+    const msg = new Message({
+      to: response.response.to,
+      from: response.response.from,
+      text: response.response.text,
+    });
+
     msg.save((err, m) => {
       if(err) return console.log(err);
       console.log(m.text + m.from + m.to + "saved");
