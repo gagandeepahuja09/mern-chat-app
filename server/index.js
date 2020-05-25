@@ -34,23 +34,31 @@ app.use('/users', usersRouter);
 
 io.on('connection', (socket) => {
   console.log("reached");
-  socket.on('join', ({ f, t }, callback) => {
+  socket.on('join', ({ from, to }, callback) => {
     // const { error, user } = addUser({ id: socket.id, name, room });
     console.log("heeee");
 
     // if(error) return callback(error);
 
     // Get all messages stored in mongodb b/w from and to
-    Message.find({ from: f, to: t }).then(messages => {
+    Message.find({ from, to }).then(messages => {
       socket.emit('get_messages', messages);
     })
-
-    // socket.join(user.room);
+    console.log("ft", from, to);
+    let room = '';
+    if(from < to) {
+      room = from + '_' + to;
+    }
+    else {
+      room = to + '_' + from;
+    }
+    console.log(room);
+    socket.join(room);
 
     // socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
     // socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
 
-    // io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+    io.to(room).emit('message', { room: room, from: from, to: to });
 
     // callback();
   });
@@ -64,11 +72,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', (response, callback) => {
-    // User.find({ name: from });
-    // if(user) {
-    //   io.emit('message', { user: response.from, text: response.text });
-    // }
     // Add an entry in message model
+    const to = response.response.to;
+    const from = response.response.from;
+    let room = '';
+    if(from < to) {
+      room = from + '_' + to;
+    }
+    else {
+      room = to + '_' + from;
+    }
+
     const msg = new Message({
       to: response.response.to,
       from: response.response.from,
@@ -79,6 +93,8 @@ io.on('connection', (socket) => {
       if(err) return console.log(err);
       console.log(m.text + m.from + m.to + "saved");
     });
+
+    io.to(room).emit('response', response);
   });
 
   // socket.on('disconnect', () => {

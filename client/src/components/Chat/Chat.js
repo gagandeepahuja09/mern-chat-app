@@ -74,14 +74,25 @@ const Chat = ({ location }) => {
             console.log('message sent');
         // });
     }, [message]);
+    
+    const updateRes = () => {
+        socket.on('response', response => {
+            // if(response.from.from != from) {
+                // setMessages(messages => [ ...messages, message ]);
+                setResponses([ ...responses, response ]);
+            // }
+        }) 
+        console.log(responses);   
+    };
 
     const sendMessage = (event) => {
         // Default behaviour would be to reset everything on 
         event.preventDefault();
         if(message) {
-            setMessages(messages => [ ...messages, message ]);
-            setResponses(responses => [ ...responses, response ]);
+            // setMessages(messages => [ ...messages, message ]);
+            // setResponses(responses => [ ...responses, response ]);
             socket.emit('sendMessage', response, () => setMessage(''), () => setResponse({}));
+            updateRes();
         }
     }
 
