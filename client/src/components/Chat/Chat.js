@@ -70,12 +70,24 @@ const Chat = ({ location }) => {
                 to: to,
                 text: message,
             };
-            setResponse({ response: re });
+            setResponse(re);
             console.log('message sent');
         // });
     }, [message]);
     
     useEffect(() => {
+        socket.on('get_messages', (messages) => {
+            messages.map((msg) => {
+                console.log(msg);
+                const curr = {
+                    to: msg.to,
+                    from: msg.from,
+                    text: msg.text
+                };
+                setResponses(responses => [...responses, curr ]);
+            });
+        },[]);
+
         socket.on('response', response => {
             // if(response.from.from != from) {
                 // setMessages(messages => [ ...messages, message ]);

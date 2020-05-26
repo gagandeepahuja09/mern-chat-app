@@ -33,11 +33,11 @@ const usersRouter = require('./routes/users.js');
 app.use('/users', usersRouter);
 
 io.on('connection', (socket) => {
-  console.log("reached");
   socket.on('join', ({ from, to }, callback) => {
     // Get all messages stored in mongodb b/w from and to
-    Message.find({ from, to }).then(messages => {
+    Message.find({$or:[{ from: from, to: to },{ from: to, to: from }]}).then(messages => {
       socket.emit('get_messages', messages);
+      console.log(messages);
     })
     console.log("ft", from, to);
     let room = '';
@@ -68,8 +68,8 @@ io.on('connection', (socket) => {
 
   socket.on('sendMessage', (response, callback) => {
     // Add an entry in message model
-    const to = response.response.to;
-    const from = response.response.from;
+    const to = response.to;
+    const from = response.from;
     let room = '';
     if(from < to) {
       room = from + '_' + to;
@@ -79,9 +79,9 @@ io.on('connection', (socket) => {
     }
 
     const msg = new Message({
-      to: response.response.to,
-      from: response.response.from,
-      text: response.response.text,
+      to: response.to,
+      from: response.from,
+      text: response.text,
     });
 
     msg.save((err, m) => {
