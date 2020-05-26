@@ -59,8 +59,6 @@ io.on('connection', (socket) => {
 
   socket.on('typing', ({ to, from, typing }) => {
     let room = '';
-    console.log("to", to);
-    console.log(from, typing);
     if(from < to) {
       room = from + '_' + to;
     }
@@ -85,17 +83,31 @@ io.on('connection', (socket) => {
       room = to + '_' + from;
     }
 
+    let count = io.sockets.adapter.rooms[room];
+    let status = false;
+    if(count.length == 2)
+      status = true;
+    console.log(count);
+
     const msg = new Message({
       to: response.to,
       from: response.from,
       text: response.text,
+      status: status,
     });
+
+    const re = {
+      to: response.to,
+      from: response.from,
+      text: response.text,
+      status: status,
+    }
 
     msg.save((err, m) => {
       if(err) return console.log(err);
     });
 
-    io.to(room).emit('response', response);
+    io.to(room).emit('response', re);
   });
 
   // socket.on('disconnect', () => {

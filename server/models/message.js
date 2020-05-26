@@ -12,6 +12,11 @@ const messageSchema = mongoose.Schema({
     text: {
         type: String,
         required: true,
+    },
+    status: {
+        type: Boolean,
+        default: false,
+        required: true,
     }
 });
 

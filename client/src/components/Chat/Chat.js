@@ -18,7 +18,6 @@ const Chat = ({ location }) => {
     const [typing, setTyping] = useState(false);
     const [message, setMessage] = useState('');
     const [response, setResponse] = useState({});
-    const [messages, setMessages] = useState([]);
     const [responses, setResponses] = useState([]);
     const ENDPOINT = 'localhost:5000';
 
@@ -52,15 +51,14 @@ const Chat = ({ location }) => {
 
     const timeoutFunction = () => {
         setTyping(false);
-        console.log("yes", typing);
         socket.emit('typing', { to , from, typing });
     }
 
     useEffect(() => {
         // if(typing) {
-            socket.emit('typing', { to, from, typing });
-            clearTimeout(timeout);
-            timeout = setTimeout(timeoutFunction, 2000);
+        socket.emit('typing', { to, from, typing });
+        clearTimeout(timeout);
+        timeout = setTimeout(timeoutFunction, 2000);
        // }
     }, [typing]);
 

@@ -12,6 +12,7 @@ const Message = ({ response, name }) => {
   const text = response.text;
   const from = response.from;
   const to = response.to;
+  const status = response.status;
 
   if(from === trimmedName) {
     isSentByCurrentUser = true;
@@ -22,6 +23,7 @@ const Message = ({ response, name }) => {
       ? (
         <div className="messageContainer justifyEnd">
           <div className="messageBox backgroundBlue">
+            <p className="sentText pr-10">{ status ? "Read" : "Unread" }</p>
             <p className="messageText colorWhite">{ReactEmoji.emojify(text)}</p>
           </div>
         </div>
