@@ -59,7 +59,8 @@ io.on('connection', (socket) => {
 
   socket.on('typing', ({ to, from, typing }) => {
     let room = '';
-    console.log(to, from, typing);
+    console.log("to", to);
+    console.log(from, typing);
     if(from < to) {
       room = from + '_' + to;
     }

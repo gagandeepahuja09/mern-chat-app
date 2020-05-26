@@ -51,16 +51,17 @@ const Chat = ({ location }) => {
     }, [ENDPOINT, window.location.search]);
 
     const timeoutFunction = () => {
-        const f = false;
-        socket.emit('typing', { to , from, f });
+        setTyping(false);
+        console.log("yes", typing);
+        socket.emit('typing', { to , from, typing });
     }
 
     useEffect(() => {
-        if(typing) {
+        // if(typing) {
             socket.emit('typing', { to, from, typing });
             clearTimeout(timeout);
             timeout = setTimeout(timeoutFunction, 2000);
-        }
+       // }
     }, [typing]);
 
     useEffect(() => {
