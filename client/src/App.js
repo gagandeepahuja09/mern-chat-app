@@ -1,5 +1,7 @@
 import React from 'react';
 
+import 'antd';
+
 import Chat from './components/Chat/Chat';
 import Join from './components/Join/Join';
 import Register from './components/Register/Register';

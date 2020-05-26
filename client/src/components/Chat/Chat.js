@@ -37,9 +37,6 @@ const Chat = ({ location }) => {
 
         setFrom(from);
         setTo(to);
-        console.log("from and to", from, to);
-
-        console.log(socket);
         // Emitting the name and room, so that it can be used in backend(on('join') in index.js)
         socket.emit('join', { from, to });
 
@@ -68,6 +65,19 @@ const Chat = ({ location }) => {
         });
     }, [typing]);
 
+    useEffect(() => {
+        socket.on('message', () => {
+            // setResponses((responses) => {
+            //     responses.map((response) => {
+            //         return {
+            //         ...response,
+            //         status: true
+            //     };
+            //     });
+            // });
+        });
+    },[]);
+
     // for handling messages
     useEffect(() => {
         console.log('arr');
@@ -78,6 +88,7 @@ const Chat = ({ location }) => {
                 from: from,
                 to: to,
                 text: message,
+                status: false,
             };
             setResponse(re);
             console.log('message sent');
@@ -90,7 +101,8 @@ const Chat = ({ location }) => {
                 const curr = {
                     to: msg.to,
                     from: msg.from,
-                    text: msg.text
+                    text: msg.text,
+                    status: msg.status,
                 };
                 setResponses(responses => [...responses, curr ]);
             });

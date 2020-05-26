@@ -17,7 +17,7 @@ export default function SignIn() {
     axios.post(URL + 'users/login', { name: name, password: room })
       .then((res) => {
         console.log(res);
-        console.log("fr");
+        setincorrectText(res.data);
         if(res.data === '') {
           var url = window.location.origin;
           url = url +  `/users/?name=${name}`;
