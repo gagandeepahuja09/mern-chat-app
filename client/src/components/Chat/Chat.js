@@ -15,16 +15,23 @@ const Chat = ({ location }) => {
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
     const [status, setStatus] = useState('');
-    const [typing, setTyping] = useState('');
+    const [typing, setTyping] = useState(false);
     const [message, setMessage] = useState('');
     const [response, setResponse] = useState({});
     const [messages, setMessages] = useState([]);
     const [responses, setResponses] = useState([]);
     const ENDPOINT = 'localhost:5000';
 
+    let room = '';
+
     useEffect(() => {
         // Getting data from query parameters and setting them in variables
         const { from, to } = queryString.parse(window.location.search);
+
+        room = to + '_' + from;
+        if(from < to) {
+            room = from + '_' + to;
+        }
 
         // Setup the socket 
         socket = io(ENDPOINT, { withCredentials: false });
@@ -44,13 +51,16 @@ const Chat = ({ location }) => {
     }, [ENDPOINT, window.location.search]);
 
     const timeoutFunction = () => {
-        socket.emit("typing", false);
+        const f = false;
+        socket.emit('typing', { to , from, f });
     }
 
     useEffect(() => {
-        socket.emit('typing', from);
-        clearTimeout(timeout)
-        timeout = setTimeout(timeoutFunction, 2000)
+        if(typing) {
+            socket.emit('typing', { to, from, typing });
+            clearTimeout(timeout);
+            timeout = setTimeout(timeoutFunction, 2000);
+        }
     }, [typing]);
 
     useEffect(() => {
@@ -78,7 +88,6 @@ const Chat = ({ location }) => {
     useEffect(() => {
         socket.on('get_messages', (messages) => {
             messages.map((msg) => {
-                console.log(msg);
                 const curr = {
                     to: msg.to,
                     from: msg.from,
@@ -108,8 +117,6 @@ const Chat = ({ location }) => {
             setMessage('');
         }
     }
-
-    console.log(response, responses);
 
     return (
         <div className = "outerContainer">

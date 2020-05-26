@@ -12,7 +12,6 @@ const Message = ({ response, name }) => {
   const text = response.text;
   const from = response.from;
   const to = response.to;
-  console.log(text, to, from);
 
   if(from === trimmedName) {
     isSentByCurrentUser = true;

@@ -37,9 +37,8 @@ io.on('connection', (socket) => {
     // Get all messages stored in mongodb b/w from and to
     Message.find({$or:[{ from: from, to: to },{ from: to, to: from }]}).then(messages => {
       socket.emit('get_messages', messages);
-      console.log(messages);
+      // console.log(messages);
     })
-    console.log("ft", from, to);
     let room = '';
     if(from < to) {
       room = from + '_' + to;
@@ -47,7 +46,7 @@ io.on('connection', (socket) => {
     else {
       room = to + '_' + from;
     }
-    console.log(room);
+    // console.log(room);
     socket.join(room);
 
     // socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
@@ -58,12 +57,19 @@ io.on('connection', (socket) => {
     // callback();
   });
 
-  socket.on('typing', (name) => {
-    /* const user = getUser(socket.id);
-    if(user && name)
-      socket.broadcast.to(user.room).emit('top-status', `${name} is typing`);
+  socket.on('typing', ({ to, from, typing }) => {
+    let room = '';
+    console.log(to, from, typing);
+    if(from < to) {
+      room = from + '_' + to;
+    }
+    else {
+      room = to + '_' + from;
+    }
+    if(typing)
+      socket.broadcast.to(room).emit('top-status', `is typing`);
     else
-      socket.broadcast.to(user.room).emit('top-status', ''); */
+      socket.broadcast.to(room).emit('top-status', ``);
   });
 
   socket.on('sendMessage', (response, callback) => {
@@ -86,7 +92,6 @@ io.on('connection', (socket) => {
 
     msg.save((err, m) => {
       if(err) return console.log(err);
-      console.log(m.text + m.from + m.to + "saved");
     });
 
     io.to(room).emit('response', response);
