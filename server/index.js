@@ -35,11 +35,6 @@ app.use('/users', usersRouter);
 io.on('connection', (socket) => {
   console.log("reached");
   socket.on('join', ({ from, to }, callback) => {
-    // const { error, user } = addUser({ id: socket.id, name, room });
-    console.log("heeee");
-
-    // if(error) return callback(error);
-
     // Get all messages stored in mongodb b/w from and to
     Message.find({ from, to }).then(messages => {
       socket.emit('get_messages', messages);

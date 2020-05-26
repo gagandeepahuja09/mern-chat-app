@@ -75,15 +75,15 @@ const Chat = ({ location }) => {
         // });
     }, [message]);
     
-    const updateRes = () => {
+    useEffect(() => {
         socket.on('response', response => {
             // if(response.from.from != from) {
                 // setMessages(messages => [ ...messages, message ]);
-                setResponses([ ...responses, response ]);
+                setResponses(responses => [ ...responses, response ]);
             // }
         }) 
         console.log(responses);   
-    };
+    },[]);
 
     const sendMessage = (event) => {
         // Default behaviour would be to reset everything on 
@@ -92,7 +92,8 @@ const Chat = ({ location }) => {
             // setMessages(messages => [ ...messages, message ]);
             // setResponses(responses => [ ...responses, response ]);
             socket.emit('sendMessage', response, () => setMessage(''), () => setResponse({}));
-            updateRes();
+            setResponse({});
+            setMessage('');
         }
     }
 
